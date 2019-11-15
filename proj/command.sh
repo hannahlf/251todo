@@ -12,24 +12,25 @@ function add(){
 	#add new item to todo
 	#my cntr is not working to name and create titles 	
 	read contents
-
-	for file in todo/*; do
-		cntr=$(ls todo +  ls completed | wc -l)
-		echo $cntr
-		if [ -f ${filename} ]; then
-			echo "This file already exists"	
-		fi
-		echo $cntr
-		cntr=$((cntr+1))	
-	done
-	filename=$cntr	
-	title=$"$1"
+	cntr=0
+	
+	td=$(ls todo | wc -l)
+	cm=$(ls completed | wc -l)
+	cntr=$((cntr+td))
+	cntr=$((cntr+cm))
+	cntr=$((cntr+1))
+	filename=$cntr
+	if [ -f ${filename} ]; then
+		echo "This file already exists"	
+	fi
+			
+	title=$"$#"
 	touch ${filename}.txt
+	chmod 700 ${filename}.txt  
 	echo $1 >> ${filename}.txt
 	echo $contents >> ${filename}.txt
 	echo $2 >> ${filename}.txt
-	#chmod 700 ${filename}
- 	mv ${filename}.txt todo
+	mv ${filename}.txt todo
 	echo "item added to list!"
 	echo "-----------------------------------"
 	echo ""
@@ -205,10 +206,30 @@ menu
 
 if [ "$#" == "0" ]; then
 	menu
-
-
 elif [ "$#" != "0" ]; then
-	"$1" "$2"
+	if [ "$1" == "help"  ]; then
+		"$1" "$2"
+		help
+	elif [ "$1" == "add" ]; then
+		"$1" "$2"
+	elif [ "$1" == "list" ]; then
+		"$1"
+		
+		if [ "$2" == "completed" ]; then
+			"$1" "$2"
+		fi
+	elif [ "$1" == "listCompleted" ]; then
+		"$1" "$2"
+	
+	elif [  "$1" == "complete" ]; then
+		"$1" "$2"
+		complete "$1"
+	else 
+		echo "Please enter a valid command"
+	fi
+
+	
+
 else
 	echo "Please enter a valid command"
 	help
